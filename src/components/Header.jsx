@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closeFile, openFile, selectCurrentFileId, selectFile, selectOpenFileIds } from '../features/Editor/editorSlice';
 import { Close } from '@mui/icons-material';
 
-const File = ({ fileId }) => {
+const File = ({ fileId, currentFileId }) => {
     const file = useSelector(state => selectFile(state.editor, fileId))
     const openFileIds = useSelector(state => selectOpenFileIds(state.editor))
     const dispatch = useDispatch()
@@ -35,17 +35,17 @@ const File = ({ fileId }) => {
                 key={fileId}
                 label={file?.nameWithExtension}
                 value={index}
-                icon={<IconButton sx={{ color: 'white', marginTop: '3px' }} onClick={handleCloseFile} ><Close sx={{ fontSize: '1rem' }} /></IconButton>}
+                icon={<IconButton sx={{ color: 'white', marginTop: '3px', position: 'relative', left: 10 }} onClick={handleCloseFile} ><Close sx={{ fontSize: '0.8rem' }} /></IconButton>}
                 sx={{
-                    paddingX: 1,
                     display: 'flex',
                     minHeight: 'auto',
-                    height: '50px',
+                    height: '40px',
                     border: '1px solid gray',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexDirection: 'row-reverse',
-                    textTransform: 'none'
+                    textTransform: 'none',
+                    background: (currentFileId === fileId) ? '#282c34' : '#21252b'
                 }}
                 onClick={() => handleOpenFile(fileId)}
             />
@@ -53,8 +53,9 @@ const File = ({ fileId }) => {
     )
 }
 
-const Header = ({ sx }) => {
+const Header = () => {
     const openFileIds = useSelector(state => selectOpenFileIds(state.editor))
+    const currentFileId = useSelector(state => selectCurrentFileId(state.editor))
     const fileId = useSelector(state => selectCurrentFileId(state.editor))
 
     const index = openFileIds.indexOf(fileId)
@@ -63,12 +64,8 @@ const Header = ({ sx }) => {
         <>
             <Box
                 sx={{
-                    ...sx,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    backgroundColor: '#25252B',
-                    border: '2px solid gray',
+                    backgroundColor: '#21252b',
+                    height: '40px'
                 }}
             >
                 <Tabs
@@ -78,11 +75,12 @@ const Header = ({ sx }) => {
                     sx={{
                         color: 'white',
                         flexGrow: 1,
-                        height: '10px'
+                        height: '0px',
+                        position: 'relative'
                     }}
                 >
                     {
-                        openFileIds.map((e) => <File key={e} fileId={e} />)
+                        openFileIds.map((e) => <File key={e} fileId={e} currentFileId={currentFileId} />)
                     }
                 </Tabs>
             </Box >

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { executeCode, selectCurrentFileId, selectFile, updateFile } from '../features/Editor/editorSlice'
 import MonacoEditor from '@monaco-editor/react'
-import { PlayArrow } from '@mui/icons-material'
+import { PlayArrow, PlayArrowOutlined } from '@mui/icons-material'
 
 const Editor = () => {
     const currentFileId = useSelector(state => selectCurrentFileId(state.editor))
@@ -44,7 +44,7 @@ const Editor = () => {
     return (
         <>
             <Grid container height={'100%'}>
-                <Grid item xs={8} >
+                <Grid item xs={8.5} >
                     <MonacoEditor
                         language={editor?.lang}
                         theme='vs-dark'
@@ -55,12 +55,12 @@ const Editor = () => {
                     />
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={3.5}>
                     <MonacoEditor
                         language='plaintext'
                         theme='vs-dark'
                         width={'100%'}
-                        height={'50%'}
+                        height={'45%'}
                         value={editor?.input}
                         onMount={e => inputRef.current = e}
                     />
@@ -69,7 +69,7 @@ const Editor = () => {
                         language='plaintext'
                         theme='vs-dark'
                         width={'100%'}
-                        height={'50%'}
+                        height={'55%'}
                         options={{
                             readOnly: true
                         }}
@@ -77,8 +77,8 @@ const Editor = () => {
                     />
                 </Grid>
             </Grid >
-            <IconButton sx={{ width: '100px', position: 'absolute', top: 1, right: 2 }} onClick={handleSubmit}>
-                <PlayArrow color='success' fontSize='large'/>
+            <IconButton sx={{ width: '100px', position: 'absolute', top: 0, right: 0 }} onClick={handleSubmit}>
+                <PlayArrowOutlined color='success' fontSize='medium' />
             </IconButton>
         </>
     )

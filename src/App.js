@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from '@mui/material'
+import { Box } from '@mui/material'
 import FileSystem from './components/FileSystem'
 import './App.css'
 import Header from './components/Header'
@@ -8,23 +8,22 @@ import Editor from './components/Editor'
 const App = () => {
   return (
     <>
-      <Grid
-        container={true}
+      <Box
         sx={{
-          height: '100%',
-          margin: '0px',
-          boxSizing: 'border-box',
-          overflowY: 'hidden'
+          display: 'flex',
+          margin: 0,
+          padding: 0,
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden'
         }}
       >
-        <Grid item xs={1.5}>
-          <FileSystem />
-        </Grid>
-        <Grid item xs={10.5} height={'100%'}>
+        <FileSystem />
+        <Box flexGrow={1}>
           <Header />
           <Editor />
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </>
   )
 }

@@ -19,6 +19,8 @@ const EXTENSION_TO_LANG = {
 
 const getOutput = createAsyncThunk('editor/get-output', async ({ fetchRetry = 0, _id, fileId }, { dispatch }) => {
     try {
+        console.log('get output..')
+
         const res = await axiosClient.get('/code-execution', {
             params: {
                 id: _id
@@ -131,13 +133,13 @@ const EditorSlice = createSlice({
                 if (message === 'pending') {
                     fileAdapter.updateOne(state, { id: fileId, changes: { status: 'pending' } })
                 } else {
-                    fileAdapter.updateOne(state, { id: fileId, changes: { status: 'failed' } })
+                    fileAdapter.updateOne(state, { id: fileId, changes: { status: 'failed', output: message } })
                 }
             })
             .addCase(getOutput.fulfilled, (state, action) => {
                 const { fileId, output } = action.payload
 
-                fileAdapter.updateOne(state, { id: fileId, changes: { output: output?.stdout, status: 'success' } })
+                fileAdapter.updateOne(state, { id: fileId, changes: { output, status: 'success' } })
             })
     }
 })
