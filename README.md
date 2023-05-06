@@ -6,6 +6,9 @@ Backend: https://github.com/nikhil-babar/code-executor
 
 ## Current progress:
 
-![Screenshot (30)](https://user-images.githubusercontent.com/115392530/235723508-de365a4c-98d0-49c9-91cb-b15dd6a967b5.png)
+![image](https://user-images.githubusercontent.com/115392530/236639311-8dfae988-77e6-4aa7-ab9a-a1a4e4a8de9f.png)
 
-![Screenshot (31)](https://user-images.githubusercontent.com/115392530/235723513-c193e24e-5dc6-4414-98ce-efd4d7f90b2b.png)
+![image](https://user-images.githubusercontent.com/115392530/236639392-6911db5c-ce1d-4b0c-8857-1ca074cdc5a0.png)
+
+![image](https://user-images.githubusercontent.com/115392530/236639458-44ee3088-1ce0-488d-a48a-fbcfdc08992e.png)
+
