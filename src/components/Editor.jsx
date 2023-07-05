@@ -1,99 +1,120 @@
-import { Grid, IconButton } from '@mui/material'
-import { useCallback, useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { executeCode, selectCurrentFileId, selectFile, updateFile } from '../features/Editor/editorSlice'
-import MonacoEditor from '@monaco-editor/react'
-import { PlayArrow } from '@mui/icons-material'
+import MonacoEditor from "@monaco-editor/react";
+import PlayIcon from "../assets/icons/play.png";
+import { useCallback, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  executeCode,
+  updateFile,
+  selectCurrentFileId,
+  selectFile,
+  FILE_STATUS,
+  selectCurrentTheme,
+} from "../features/Editor/editorSlice";
+import { ClockLoader } from "react-spinners";
+import ReactDOM from "react-dom";
 
-const Editor = () => {
-    const currentFileId = useSelector(state => selectCurrentFileId(state.editor))
-    const editor = useSelector((state => selectFile(state.editor, currentFileId)))
-    const editorRef = useRef()
-    const inputRef = useRef()
-    const dispatch = useDispatch()
+const Loader = ({ isLoading }) => {
+  if (!isLoading) return null;
 
-    const handleSubmit = useCallback(() => {
+  return ReactDOM.createPortal(
+    <>
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-black opacity-50"></div>
+      <div className="fixed top-0 left-0 right-0 bottom-0 m-auto w-fit h-fit">
+        <ClockLoader color="#10E6D7" loading={isLoading} />
+      </div>
+    </>,
+    document.getElementById("loader")
+  );
+};
 
-        dispatch(executeCode({
-            code: editorRef.current?.getValue(),
-            input: inputRef.current?.getValue(),
-            fileId: currentFileId
-        }))
+const Editor = ({ className }) => {
+  const currentFileId = useSelector((state) =>
+    selectCurrentFileId(state.editor)
+  );
+  const editor = useSelector((state) =>
+    selectFile(state.editor, currentFileId)
+  );
+  const theme = useSelector((state) => selectCurrentTheme(state.editor));
+  const editorRef = useRef();
+  const inputRef = useRef();
+  const dispatch = useDispatch();
+  const isLoading =
+    editor?.status.localeCompare(FILE_STATUS.pending) === 0 ? true : false;
 
-    }, [dispatch, currentFileId])
+  const handleSubmit = useCallback(() => {
+    dispatch(
+      executeCode({
+        code: editorRef.current?.getValue(),
+        input: inputRef.current?.getValue(),
+        fileId: currentFileId,
+      })
+    );
+  }, [dispatch, currentFileId]);
 
-    useEffect(() => {
-        if (!currentFileId) return
+  useEffect(() => {
+    if (!currentFileId) return;
 
-        const id = currentFileId
+    const id = currentFileId;
 
-        return () => {
-            if (!id) return
+    return () => {
+      if (!id) return;
 
-            dispatch(updateFile({
-                fileId: id,
-                code: editorRef.current?.getValue(),
-                input: inputRef.current?.getValue()
-            }))
+      dispatch(
+        updateFile({
+          fileId: id,
+          code: editorRef.current?.getValue(),
+          input: inputRef.current?.getValue(),
+        })
+      );
 
-            editorRef.current?.setValue('')
-            inputRef.current?.setValue('')
-        }
-    }, [currentFileId, dispatch])
+      editorRef.current?.setValue("");
+      inputRef.current?.setValue("");
+    };
+  }, [currentFileId, dispatch]);
 
-    return (
-        <>
-            <Grid container height={'100%'}>
-                <Grid item xs={8} >
-                    <MonacoEditor
-                        language={editor?.lang}
-                        theme='vs-dark'
-                        width={'100%'}
-                        height={'100%'}
-                        value={editor?.code}
-                        onMount={e => editorRef.current = e}
-                    />
-                </Grid>
+  return (
+    <>
+      <div className={`flex ${className}`}>
+        <div className="flex-grow">
+          <MonacoEditor
+            theme={theme}
+            value={editor?.code}
+            width={"100%"}
+            height={"100%"}
+            onMount={(e) => (editorRef.current = e)}
+            language={editor?.lang}
+          />
+        </div>
+        <div className="max-w-[400px] flex-grow">
+          <MonacoEditor
+            language="plaintext"
+            theme={theme}
+            height={"50%"}
+            width={"100%"}
+            onMount={(e) => (inputRef.current = e)}
+            value={editor?.input}
+          />
+          <MonacoEditor
+            language="plaintext"
+            theme={theme}
+            options={{
+              readOnly: true,
+            }}
+            height={"50%"}
+            width={"100%"}
+            value={editor?.output}
+          />
+        </div>
+      </div>
+      <button
+        className="absolute top-0 right-0 mr-9 my-2"
+        onClick={handleSubmit}
+      >
+        <img src={PlayIcon} alt="run" className="w-6 h-6" />
+      </button>
+      <Loader isLoading={isLoading} />
+    </>
+  );
+};
 
-                <Grid item xs={4}>
-                    <MonacoEditor
-                        language='plaintext'
-                        theme='vs-dark'
-                        width={'100%'}
-                        height={'50%'}
-                        value={editor?.input}
-                        onMount={e => inputRef.current = e}
-                    />
-
-                    <MonacoEditor
-                        language='plaintext'
-                        theme='vs-dark'
-                        width={'100%'}
-                        height={'50%'}
-                        options={{
-                            readOnly: true
-                        }}
-                        value={editor?.output}
-                    />
-                </Grid>
-            </Grid >
-            <IconButton sx={{ width: '100px', position: 'absolute', top: 1, right: 2 }} onClick={handleSubmit}>
-                <PlayArrow color='success' fontSize='large'/>
-            </IconButton>
-        </>
-    )
-}
-
-export default Editor
-
-
-
-/*
-
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, world!");
-    }
-}
-
-*/
+export default Editor;

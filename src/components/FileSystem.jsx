@@ -1,128 +1,88 @@
-import { AddOutlined, FileOpen } from "@mui/icons-material"
-import { Box, IconButton, List, ListItem, Modal, Typography, TextField, Button, Icon } from "@mui/material"
-import { useCallback, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { addFile, openFile, selectAllFiles } from "../features/Editor/editorSlice"
+import React, { useState } from "react";
+import CreateFileIcon from "../assets/icons/create_file.png";
+import CreateFolderIcon from "../assets/icons/create_folder.png";
+import JavaIcon from "../assets/icons/java.png";
+import CppIcon from "../assets/icons/cpp.png";
+import PythonIcon from "../assets/icons/python.png";
+import JsIcon from "../assets/icons/javascript.png";
+import CreateFile from "./CreateFile";
+import { useSelector, useDispatch } from "react-redux";
+import { openFile, selectAllFiles } from "../features/Editor/editorSlice";
+import { useCallback } from "react";
 
-const File = ({ file }) => {
-    const dispatch = useDispatch()
+const FILE_TO_ICON = {
+  cpp: CppIcon,
+  java: JavaIcon,
+  python: PythonIcon,
+  javascript: JsIcon,
+};
 
-    const handleClick = useCallback(() => {
-        dispatch(openFile({
-            fileId: file?.fileId
-        }))
-    }, [file?.fileId, dispatch])
+const File = ({ details }) => {
+  const dispatch = useDispatch();
 
-    return (
-        <>
-            <ListItem
-                sx={{
-                    cursor: 'pointer'
-                }}
+  const handleClick = useCallback(() => {
+    dispatch(
+      openFile({
+        fileId: details?.fileId,
+      })
+    );
+  }, [details?.fileId, dispatch]);
 
-                onClick={handleClick}
-            >
-                <Icon
-                    fontSize="small"
-                >
-                    <FileOpen />
-                </Icon>
-                <Typography
-                    sx={{
-                        marginLeft: 1,
-                        borderBottom: '1px solid white'
-                    }}
-                    variant="h7"
-                >
-                    {file?.nameWithExtension}
-                </Typography>
-            </ListItem>
-        </>
-    )
-}
+  return (
+    <>
+      <li className="flex gap-1 p-2" onClick={handleClick}>
+        <img src={FILE_TO_ICON[details.lang]} alt="lang" className="w-5 h-5" />
+        <button className="text-slate-300 text-sm font-medium cursor-pointer hover:text-white">
+          {details.nameWithExtension}
+        </button>
+      </li>
+    </>
+  );
+};
 
+const FileSystem = () => {
+  const [isCreateFileOpen, setIsCreateFileOpen] = useState(false);
+  const files = useSelector((state) => selectAllFiles(state.editor));
 
-const FileSystem = ({ sx }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [filename, setFilename] = useState('')
-    const dispatch = useDispatch()
+  return (
+    <>
+      <div className="w-60 h-full bg-se-gray pt-3 border-r-[1px] border-gray-500">
+        <div className="border-neon-blue border-b-[1px] px-4 pb-2">
+          <div className="flex justify-between items-center">
+            <h3 className="flex grow text-base text-white font-semibold">
+              Explorer
+            </h3>
+            <div className="flex gap-2">
+              <img
+                src={CreateFileIcon}
+                alt="file"
+                className="h-5 w-5 hover:opacity-75 cursor-pointer"
+                onClick={() => setIsCreateFileOpen(true)}
+              />
+              <img
+                src={CreateFolderIcon}
+                alt="folder"
+                className="h-5 w-5 hover:opacity-75 cursor-pointer"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="p-4">
+          <ul className="list-none">
+            {files.map((file) => {
+              return <File details={file} key={file.fileId} />;
+            })}
+          </ul>
+        </div>
+      </div>
+      {isCreateFileOpen && (
+        <CreateFile
+          isOpen={isCreateFileOpen}
+          handleClick={() => setIsCreateFileOpen(false)}
+        />
+      )}
+    </>
+  );
+};
 
-    const files = useSelector(state => selectAllFiles(state.editor))
-
-    const handleSubmit = useCallback(() => {
-        if (!filename || filename.length === 0) return
-
-        const [name, extension] = filename.split('.')
-
-        dispatch(addFile({
-            name,
-            extension
-        }))
-
-        setIsModalOpen(false)
-
-    }, [filename, dispatch])
-
-    return (
-        <>
-            <Box
-                sx={{
-                    backgroundColor: '#25252F',
-                    color: 'white',
-                    height: '100%',
-                    border: '2px solid gray',
-                    ...sx
-                }}
-            >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '14px'
-                    }}
-                >
-                    <Typography variant="h6">Explorer</Typography>
-                    <IconButton sx={{
-                        color: 'green',
-                    }}
-                        onClick={() => setIsModalOpen(true)}
-                    >
-                        <AddOutlined />
-                    </IconButton>
-                </Box>
-                <List>
-                    {
-                        files?.map(e => <File key={e.fileId} file={e}/>)
-                    }
-                </List>
-            </Box >
-            <Modal
-                open={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        backgroundColor: '#001E3C',
-                        padding: 2,
-                        borderRadius: '4%',
-                        width: 'fit-content',
-                        transform: 'translate(-50%, -50%)',
-                        color: 'white'
-                    }}
-                >
-                    <Typography variant="h5" sx={{ marginBottom: 2 }}>New File</Typography>
-                    <TextField id="outlined-basic" label="Outlined" variant="outlined" sx={{ marginX: 1, input: { color: 'white' } }} onChange={(e) => setFilename(e.target.value)} />
-                    <Button type="submit" sx={{ backgroundColor: 'green', color: 'white' }} onClick={handleSubmit}>create</Button>
-                </Box>
-            </Modal >
-        </>
-    )
-}
-
-//#0F1016
-
-export default FileSystem
+export default FileSystem;

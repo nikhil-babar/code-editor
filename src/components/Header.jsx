@@ -1,93 +1,100 @@
-import { Box, Tabs, Tab, IconButton } from '@mui/material'
-import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { closeFile, openFile, selectCurrentFileId, selectFile, selectOpenFileIds } from '../features/Editor/editorSlice';
-import { Close } from '@mui/icons-material';
+import JavaIcon from "../assets/icons/java.png";
+import CppIcon from "../assets/icons/cpp.png";
+import PythonIcon from "../assets/icons/python.png";
+import JsIcon from "../assets/icons/javascript.png";
+import CrossIcon from "../assets/icons/cross.png";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectFile,
+  selectOpenFileIds,
+  closeFile,
+  openFile,
+  selectCurrentFileId,
+} from "../features/Editor/editorSlice";
+import { useCallback } from "react";
 
-const File = ({ fileId }) => {
-    const file = useSelector(state => selectFile(state.editor, fileId))
-    const openFileIds = useSelector(state => selectOpenFileIds(state.editor))
-    const dispatch = useDispatch()
+const FILE_TO_ICON = {
+  cpp: CppIcon,
+  java: JavaIcon,
+  python: PythonIcon,
+  javascript: JsIcon,
+};
 
-    const handleCloseFile = useCallback((e) => {
-        e.stopPropagation()
+const File = ({ fileId, isCurrentFile }) => {
+  const fileDetails = useSelector((state) => selectFile(state.editor, fileId));
+  const dispatch = useDispatch();
 
-        dispatch(closeFile({
-            fileId
-        }))
+  const handleCloseFile = useCallback(
+    (e) => {
+      e.stopPropagation();
 
-    }, [dispatch, fileId])
+      dispatch(
+        closeFile({
+          fileId,
+        })
+      );
+    },
+    [dispatch, fileId]
+  );
 
-    const handleOpenFile = useCallback((fileId) => {
+  const handleOpenFile = useCallback(() => {
+    dispatch(
+      openFile({
+        fileId,
+      })
+    );
+  }, [dispatch, fileId]);
 
-        dispatch(openFile({
-            fileId
-        }))
+  return (
+    <>
+      <li
+        className={`flex gap-2 px-3 h-[40px] border-r-[1px] border-gray-500 justify-center items-center ${
+          !isCurrentFile ? "opacity-60" : null
+        }`}
+        onClick={handleOpenFile}
+      >
+        <img
+          src={FILE_TO_ICON[fileDetails.lang]}
+          alt="lang"
+          className="w-5 h-5"
+        />
+        <h3 className="text-slate-300 text-sm font-light cursor-pointer hover:text-white">
+          {fileDetails.nameWithExtension}
+        </h3>
+        <button>
+          <img
+            src={CrossIcon}
+            alt="cross"
+            className="h-3 w-3"
+            onClick={handleCloseFile}
+          />
+        </button>
+      </li>
+    </>
+  );
+};
 
-    }, [dispatch])
+const Header = () => {
+  const filesIds = useSelector((state) => selectOpenFileIds(state.editor));
+  const currentFileId = useSelector((state) =>
+    selectCurrentFileId(state.editor)
+  );
 
+  return (
+    <>
+      <div className="h-[40px] w-full border border-gray-500 bg-se-gray flex justify-between pr-7">
+        <ul className="flex items-center">
+          {filesIds.map((file) => {
+            return (
+              <>
+                <File fileId={file} isCurrentFile={file === currentFileId} key={file}/>
+              </>
+            );
+          })}
+        </ul>
+      </div>
+    </>
+  );
+};
 
-    const index = openFileIds.indexOf(fileId)
-
-    return (
-        <>
-            <Tab
-                key={fileId}
-                label={file?.nameWithExtension}
-                value={index}
-                icon={<IconButton sx={{ color: 'white', marginTop: '3px' }} onClick={handleCloseFile} ><Close sx={{ fontSize: '1rem' }} /></IconButton>}
-                sx={{
-                    paddingX: 1,
-                    display: 'flex',
-                    minHeight: 'auto',
-                    height: '50px',
-                    border: '1px solid gray',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexDirection: 'row-reverse',
-                    textTransform: 'none'
-                }}
-                onClick={() => handleOpenFile(fileId)}
-            />
-        </>
-    )
-}
-
-const Header = ({ sx }) => {
-    const openFileIds = useSelector(state => selectOpenFileIds(state.editor))
-    const fileId = useSelector(state => selectCurrentFileId(state.editor))
-
-    const index = openFileIds.indexOf(fileId)
-
-    return (
-        <>
-            <Box
-                sx={{
-                    ...sx,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    backgroundColor: '#25252B',
-                    border: '2px solid gray',
-                }}
-            >
-                <Tabs
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    value={index}
-                    sx={{
-                        color: 'white',
-                        flexGrow: 1,
-                        height: '10px'
-                    }}
-                >
-                    {
-                        openFileIds.map((e) => <File key={e} fileId={e} />)
-                    }
-                </Tabs>
-            </Box >
-        </>
-    )
-}
-
-export default Header
+export default Header;

@@ -11,4 +11,3 @@ Backend: https://github.com/nikhil-babar/code-executor
 ![image](https://user-images.githubusercontent.com/115392530/236639392-6911db5c-ce1d-4b0c-8857-1ca074cdc5a0.png)
 
 ![image](https://user-images.githubusercontent.com/115392530/236639458-44ee3088-1ce0-488d-a48a-fbcfdc08992e.png)
-
