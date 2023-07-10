@@ -1,50 +1,47 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import Modal from "./Modal";
-import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addFile } from "../features/Editor/editorSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectFile, updateFile } from "../features/Editor/editorSlice";
 
-const CreateFile = ({ handleClick }) => {
-  const [filename, setFilename] = useState(null);
+const UpdateFile = ({ handleClose, fileId }) => {
+  const file = useSelector((state) => selectFile(state.editor, fileId));
+  const [filename, setFilename] = useState(file.nameWithExtension);
   const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
 
-      if (!filename || filename.length === 0) return;
+    if (!filename || filename.length === 0) return;
 
-      const [name, extension] = filename.split(".");
+    const [name, extension] = filename.split(".");
 
-      if (!name || !extension) {
-        setIsError(true);
-        return;
-      }
+    if (!name || !extension) {
+      setIsError(true);
+      return;
+    }
 
-      dispatch(
-        addFile({
-          name,
-          extension,
-        })
-      );
+    dispatch(
+      updateFile({
+        fileId,
+        nameWithExtension: filename,
+      })
+    );
 
-      handleClick();
-    },
-    [filename, dispatch, handleClick]
-  );
+    handleClose();
+  }, [dispatch, filename, fileId, handleClose]);
 
   return (
-    <Modal handleClick={handleClick} className={"max-w-[400px]"}>
+    <Modal handleClick={handleClose} className={"max-w-[400px]"}>
       <div className="p-5">
         <form onSubmit={handleSubmit}>
           <label
             htmlFor="small-input"
             className="block mb-4  text-xl font-medium text-gray-400"
           >
-            Create New File
+            Update File
           </label>
-          <div  className="flex justify-between gap-2">
+          <div className="flex justify-between gap-2">
             <input
               type="text"
               id="small-input"
@@ -56,13 +53,14 @@ const CreateFile = ({ handleClick }) => {
               onChange={(e) => setFilename(e.target.value)}
               onFocus={() => setIsError(false)}
               autoFocus
+              value={filename}
             />
             <button
               type="submit"
               className="text-whit font-medium rounded-lg text-base px-4 py-1.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
               onke
             >
-              Create
+              Update
             </button>
           </div>
         </form>
@@ -71,4 +69,4 @@ const CreateFile = ({ handleClick }) => {
   );
 };
 
-export default CreateFile;
+export default UpdateFile;

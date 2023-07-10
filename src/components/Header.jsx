@@ -87,7 +87,7 @@ const Header = () => {
           {filesIds.map((file) => {
             return (
               <>
-                <File fileId={file} isCurrentFile={file === currentFileId} key={file}/>
+                <File fileId={file} isCurrentFile={file === currentFileId} key={file.fileId}/>
               </>
             );
           })}

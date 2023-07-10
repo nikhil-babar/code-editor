@@ -14,7 +14,7 @@ const getThemeImages = ({ themes }) => {
 
 const ThemeModal = ({ handleClick }) => {
   const themes = useSelector((state) => selectThemes(state.editor));
-  const currentTheme = useRef()
+  const currentTheme = useRef(themes[0]);
   const dispatch = useDispatch();
 
   const settings = {
@@ -25,15 +25,15 @@ const ThemeModal = ({ handleClick }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     beforeChange: (_oldIndex, newIndex) => {
-      currentTheme.current = themes[newIndex]
+      currentTheme.current = themes[newIndex];
     },
   };
 
   useEffect(() => {
     return () => {
-      dispatch(setTheme(currentTheme.current))
-    }
-  }, [dispatch])
+      dispatch(setTheme(currentTheme.current));
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -42,7 +42,7 @@ const ThemeModal = ({ handleClick }) => {
         className={"max-w-[600px] h-96 flex justify-center items-center"}
       >
         <Slider {...settings} className="w-[500px]">
-          {getThemeImages({ themes }).map(({theme, image}) => {
+          {getThemeImages({ themes }).map(({ theme, image }) => {
             return (
               <>
                 <img

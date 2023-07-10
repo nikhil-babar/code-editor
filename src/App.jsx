@@ -13,10 +13,8 @@ const App = () => {
 
     Promise.all([
       import("./assets/themes/blackboard.json"),
-      import("./assets/themes/chrome-devtools.json"),
       import("./assets/themes/dracula.json"),
       import("./assets/themes/github-dark.json"),
-      import("./assets/themes/github.json"),
       import("./assets/themes/monokai.json"),
       import("./assets/themes/solarized-dark.json"),
       import("./assets/themes/twilight.json"),
@@ -24,19 +22,15 @@ const App = () => {
       .then(
         ([
           blackboard,
-          chromeDevtools,
           dracula,
           githubDark,
-          github,
           monokai,
           solarizedDark,
           twilight,
         ]) => {
           monaco.editor.defineTheme("blackboard", blackboard);
-          monaco.editor.defineTheme("chrome-devtools", chromeDevtools);
           monaco.editor.defineTheme("dracula", dracula);
           monaco.editor.defineTheme("github-dark", githubDark);
-          monaco.editor.defineTheme("github", github);
           monaco.editor.defineTheme("monokai", monokai);
           monaco.editor.defineTheme("solarized-dark", solarizedDark);
           monaco.editor.defineTheme("twilight", twilight);

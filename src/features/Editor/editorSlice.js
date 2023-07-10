@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { axiosClient } from "../../axiosClient";
 import { v4 as uuid } from "uuid";
+import { saveAs } from 'file-saver'
 
 export const FILE_STATUS = {
   pending: "PENDING",
@@ -97,16 +98,14 @@ const EditorSlice = createSlice({
     openFileIds: [],
     currentFileId: null,
     themes: [
-      "chrome-devtools",
       "blackboard",
       "dracula",
       "github-dark",
-      "github",
       "monokai",
       "solarized-dark",
       "twilight",
     ],
-    currentTheme: "twilight",
+    currentTheme: "github-dark",
   },
   reducers: {
     addFile: (state, action) => {
@@ -129,6 +128,7 @@ const EditorSlice = createSlice({
     },
 
     openFile: (state, action) => {
+      console.log("Open file")
       const { fileId } = action.payload;
       if (!fileId) return;
 
@@ -142,6 +142,7 @@ const EditorSlice = createSlice({
     },
 
     closeFile: (state, action) => {
+      console.log("Close file dispatched")
       const { fileId } = action.payload;
       const index = state.openFileIds.findIndex((e) => e === fileId);
 
@@ -161,9 +162,30 @@ const EditorSlice = createSlice({
       });
     },
 
+    deleteFile: (state, action) => {
+      const { fileId } = action.payload;
+
+      fileAdapter.removeOne(state, fileId);
+
+      const index = state.openFileIds.findIndex((e) => e === fileId);
+      if (index === -1) return;
+
+      state.openFileIds.splice(index, 1);
+      state.currentFileId =
+        state.openFileIds.length !== 0
+          ? state.openFileIds[Math.min(index, state.openFileIds.length - 1)]
+          : null;
+    },
+
     setTheme: (state, action) => {
       state.currentTheme = action.payload;
     },
+
+    downloadFile: (state, action) => {
+      const { fileId } = action.payload;
+      if(!fileId) return;
+      saveAs(new Blob([state.entities[fileId].code], { type: 'text/plain;charset=utf-8' }), state.entities[fileId].nameWithExtension)
+    }
   },
 
   extraReducers: (builder) => {
@@ -194,7 +216,7 @@ const EditorSlice = createSlice({
   },
 });
 
-export const { addFile, openFile, closeFile, updateFile, setTheme } =
+export const { addFile, openFile, closeFile, updateFile, setTheme, deleteFile, downloadFile } =
   EditorSlice.actions;
 
 export const {
