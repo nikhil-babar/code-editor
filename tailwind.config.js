@@ -6,6 +6,7 @@ module.exports = {
       backgroundColor: {
         "pr-gray": "#333333",
         "se-gray": "#252426",
+        "ed-bg": "#353D45"
       },
       borderColor: {
         "neon-blue": "#10E6D7",

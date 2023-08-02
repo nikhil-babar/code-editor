@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
-import Editor from "./components/Editor";
 import { useMonaco } from "@monaco-editor/react";
+import DrawingBoard from "./components/DrawingBoard/DrawingBoard";
 
 const App = () => {
   const monaco = useMonaco();
@@ -46,12 +44,8 @@ const App = () => {
 
   return (
     <>
-      <div className="bg-slate-400 w-full h-screen flex overflow-hidden">
-        <Sidebar />
-        <div className="flex-grow">
-          <Header />
-          <Editor className={"w-full h-full"} />
-        </div>
+      <div className="w-screen h-screen">
+        <DrawingBoard />
       </div>
     </>
   );

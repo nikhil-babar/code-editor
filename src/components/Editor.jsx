@@ -1,5 +1,6 @@
 import MonacoEditor from "@monaco-editor/react";
 import PlayIcon from "../assets/icons/play.png";
+import Brand from "../assets/icons/logo.png";
 import { useCallback, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -72,6 +73,17 @@ const Editor = ({ className }) => {
     };
   }, [currentFileId, dispatch]);
 
+  if (!currentFileId) {
+    return (
+      <div className="flew-grow bg-pr-gray h-full flex justify-center items-center">
+        <div>
+          <img src={Brand} alt="Logo" className="w-80 h-80 opacity-50 relative bottom-10" />
+          <h1 className="text-stone-600 text-2xl font-bold font-mono text-center relative left-5 bottom-10">Create/Open a new file..</h1>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={`flex ${className}`}>
@@ -79,18 +91,15 @@ const Editor = ({ className }) => {
           <MonacoEditor
             theme={theme}
             value={editor?.code}
-            width={"100%"}
-            height={"100%"}
             onMount={(e) => (editorRef.current = e)}
             language={editor?.lang}
           />
         </div>
-        <div className="max-w-[400px] flex-grow">
+        <div className="w-[400px]">
           <MonacoEditor
             language="plaintext"
             theme={theme}
             height={"50%"}
-            width={"100%"}
             onMount={(e) => (inputRef.current = e)}
             value={editor?.input}
           />
@@ -101,7 +110,6 @@ const Editor = ({ className }) => {
               readOnly: true,
             }}
             height={"50%"}
-            width={"100%"}
             value={editor?.output}
           />
         </div>

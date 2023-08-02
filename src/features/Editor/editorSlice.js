@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { axiosClient } from "../../axiosClient";
 import { v4 as uuid } from "uuid";
-import { saveAs } from 'file-saver'
+import { saveAs } from "file-saver";
 
 export const FILE_STATUS = {
   pending: "PENDING",
@@ -27,17 +27,15 @@ const getOutput = createAsyncThunk(
   "editor/get-output",
   async ({ fetchRetry = 0, _id, fileId }, { dispatch }) => {
     try {
-      const res = await axiosClient.get("/code-execution", {
+      const res = await axiosClient.get("/code", {
         params: {
-          id: _id,
+          submit_id: _id,
         },
       });
 
-      if (res.data.status === "failed") throw new Error(res.data.error);
-
       return { ...res.data, fileId };
     } catch (error) {
-      if (error.response && error.response.status === 404 && fetchRetry <= 5) {
+      if (error.response && error.response.status === 404 && fetchRetry <= 10) {
         setTimeout(
           () => dispatch(getOutput({ fetchRetry: ++fetchRetry, _id, fileId })),
           1000
@@ -59,6 +57,10 @@ export const executeCode = createAsyncThunk(
   "editor/execute-code",
   async ({ code, input, fileId }, { getState, dispatch }) => {
     try {
+      const file = fileAdapter
+        .getSelectors()
+        .selectById(getState().editor, fileId);
+
       dispatch(
         updateFile({
           code,
@@ -67,16 +69,16 @@ export const executeCode = createAsyncThunk(
         })
       );
 
-      const res = await axiosClient.post("/code-execution", {
+      const res = await axiosClient.post("/code", {
         code,
-        lang: fileAdapter.getSelectors().selectById(getState().editor, fileId)
-          ?.lang,
+        lang: file.lang,
+        filename: file.nameWithExtension,
         input,
       });
 
       dispatch(
         getOutput({
-          _id: res.data._id,
+          _id: res.data.submit_id,
           fileId,
         })
       );
@@ -113,9 +115,9 @@ const EditorSlice = createSlice({
         ...action.payload,
         fileId: uuid(),
         status: FILE_STATUS.idle,
-        code: "",
-        input: "",
-        output: "",
+        code: " ",
+        input: " ",
+        output: " ",
         lang: EXTENSION_TO_LANG[action.payload.extension],
         nameWithExtension: [action.payload.name, action.payload.extension].join(
           "."
@@ -128,7 +130,7 @@ const EditorSlice = createSlice({
     },
 
     openFile: (state, action) => {
-      console.log("Open file")
+      console.log("Open file");
       const { fileId } = action.payload;
       if (!fileId) return;
 
@@ -142,7 +144,6 @@ const EditorSlice = createSlice({
     },
 
     closeFile: (state, action) => {
-      console.log("Close file dispatched")
       const { fileId } = action.payload;
       const index = state.openFileIds.findIndex((e) => e === fileId);
 
@@ -183,9 +184,14 @@ const EditorSlice = createSlice({
 
     downloadFile: (state, action) => {
       const { fileId } = action.payload;
-      if(!fileId) return;
-      saveAs(new Blob([state.entities[fileId].code], { type: 'text/plain;charset=utf-8' }), state.entities[fileId].nameWithExtension)
-    }
+      if (!fileId) return;
+      saveAs(
+        new Blob([state.entities[fileId].code], {
+          type: "text/plain;charset=utf-8",
+        }),
+        state.entities[fileId].nameWithExtension
+      );
+    },
   },
 
   extraReducers: (builder) => {
@@ -216,8 +222,15 @@ const EditorSlice = createSlice({
   },
 });
 
-export const { addFile, openFile, closeFile, updateFile, setTheme, deleteFile, downloadFile } =
-  EditorSlice.actions;
+export const {
+  addFile,
+  openFile,
+  closeFile,
+  updateFile,
+  setTheme,
+  deleteFile,
+  downloadFile,
+} = EditorSlice.actions;
 
 export const {
   selectAll: selectAllFiles,

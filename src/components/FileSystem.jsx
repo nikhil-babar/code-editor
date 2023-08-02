@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CreateFileIcon from "../assets/icons/create_file.png";
-import CreateFolderIcon from "../assets/icons/create_folder.png";
 import JavaIcon from "../assets/icons/java.png";
 import CppIcon from "../assets/icons/cpp.png";
 import PythonIcon from "../assets/icons/python.png";
@@ -79,7 +78,7 @@ const FileSystem = () => {
         <div className="px-4 pb-2">
           <div className="flex justify-between items-center">
             <h3 className="flex grow text-base text-white font-semibold">
-              Explorer
+              CodeXpert
             </h3>
             <div className="flex gap-2">
               <img
@@ -87,11 +86,6 @@ const FileSystem = () => {
                 alt="file"
                 className="h-5 w-5 hover:opacity-75 cursor-pointer"
                 onClick={() => setIsCreateFileOpen(true)}
-              />
-              <img
-                src={CreateFolderIcon}
-                alt="folder"
-                className="h-5 w-5 hover:opacity-75 cursor-pointer"
               />
             </div>
           </div>

@@ -41,7 +41,7 @@ const ThemeModal = ({ handleClick }) => {
         handleClick={handleClick}
         className={"max-w-[600px] h-96 flex justify-center items-center"}
       >
-        <Slider {...settings} className="w-[500px]">
+        <Slider {...settings} className="w-[500px] py-5">
           {getThemeImages({ themes }).map(({ theme, image }) => {
             return (
               <>
