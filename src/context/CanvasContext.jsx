@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useState } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import { v4 as uuid } from "uuid";
+import useHistory from "../hooks/useHistory";
 
 export const CanvasContext = createContext({});
 
@@ -32,8 +33,24 @@ const createCurve = (points, generater) => {
   return generater.curve(points, { strokeWidth: 2 });
 };
 
+const resizeCoordinates = (x, y, canvas) => {
+  const { left, top, width, height } = canvas.getBoundingClientRect()
+  const mouse = { x: 0, y: 0 }
+
+  mouse.x = x - left;
+  mouse.y = y - top;
+
+  mouse.x /= width;
+  mouse.y /= height;
+
+  mouse.x *= canvas.width;
+  mouse.y *= canvas.height;
+
+  return mouse
+}
+
 const CanvasProvider = ({ children }) => {
-  const [drawable, setDrawable] = useState([]);
+  const [drawable, setDrawable, undoDrawable, redoDrawable] = useHistory();
   const [active, setActive] = useState(false);
   const [tool, setTool] = useState(TOOLS.line);
 
@@ -67,10 +84,13 @@ const CanvasProvider = ({ children }) => {
 
       switch (tool) {
         case TOOLS.pencil:
-          setDrawable((prev) => [
-            ...prev,
-            { element: newElement, points: [[x, y]], tool, id: uuid() },
-          ]);
+          setDrawable(
+            (prev) => [
+              ...prev,
+              { element: newElement, points: [[x, y]], tool, id: uuid() },
+            ],
+            false
+          );
           break;
 
         case TOOLS.line:
@@ -171,14 +191,15 @@ const CanvasProvider = ({ children }) => {
           break;
       }
 
-      setDrawable(copy);
+      setDrawable(copy, true);
     },
     [setDrawable, active, tool, drawable]
   );
 
   const handleMouseDown = useCallback(
     (e) => {
-      createDrawable(e.clientX, e.clientY, e.target);
+      const coordinates = resizeCoordinates(e.clientX, e.clientY, e.target);
+      createDrawable(coordinates.x, coordinates.y, e.target);
       setActive(true);
     },
     [createDrawable, setActive]
@@ -196,7 +217,8 @@ const CanvasProvider = ({ children }) => {
       e.preventDefault();
       if (!active || drawable.length === 0) return;
       const id = drawable[drawable.length - 1].id;
-      updateDrawable(id, e.clientX, e.clientY, e.target);
+      const coordinates = resizeCoordinates(e.clientX, e.clientY, e.target);
+      updateDrawable(id, coordinates.x, coordinates.y, e.target);
     },
     [updateDrawable, active, drawable]
   );
@@ -220,6 +242,8 @@ const CanvasProvider = ({ children }) => {
           handleMouseMove,
           handleMouseUp,
           selectTool,
+          undoDrawable,
+          redoDrawable
         }}
       >
         {children}

@@ -5,6 +5,8 @@ import Rectangle from "../../assets/icons/rectangle.png";
 import Line from "../../assets/icons/line.png";
 import Pencil from "../../assets/icons/pen.png";
 import Erase from "../../assets/icons/erase.png";
+import Undo from "../../assets/icons/undo.png"
+import Redo from "../../assets/icons/redo.png"
 
 const TOOL_TO_ICON = {
   line: Line,
@@ -15,7 +17,8 @@ const TOOL_TO_ICON = {
 };
 
 const Sidebar = () => {
-  const { TOOLS, selectTool } = useContext(CanvasContext);
+  const { TOOLS, selectTool, undoDrawable, redoDrawable } =
+    useContext(CanvasContext);
 
   return (
     <div className="w-20 h-full bg-gray-600 p-2">
@@ -31,6 +34,22 @@ const Sidebar = () => {
           </button>
         );
       })}
+
+      <button
+        type="button"
+        className="w-7 h-7 my-4"
+        onClick={() => undoDrawable()}
+      >
+        <img src={Undo} alt={"undo"} />
+      </button>
+
+      <button
+        type="button"
+        className="w-7 h-7 my-4"
+        onClick={() => redoDrawable()}
+      >
+        <img src={Redo} alt={"redo"} />
+      </button>
     </div>
   );
 };
