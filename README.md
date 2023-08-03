@@ -2,7 +2,7 @@
 
 This is a web-based editor(currently under development) which supports languages like java, python, cpp. It is build using official monaco-editor and uses code execution engine backend(Available on my github). The project uses redux for state management
 
-Backend: https://github.com/nikhil-babar/code-executor
+Backend: https://github.com/nikhil-babar/code-executor-engine
 
 ## Current progress:
 
