@@ -5,8 +5,9 @@ import {
   closeFile,
   deleteFile,
   downloadFile,
-} from "../features/Editor/editorSlice";
+} from "../../features/Editor/editorSlice";
 import UpdateFile from "./UpdateFile";
+import { event } from "../../utils/events";
 
 const options = {
   Open: openFile,
@@ -22,6 +23,7 @@ const FileDropdown = ({ fileId, closeDropdown }) => {
   const handleClick = useCallback(
     (e, opt) => {
       e.stopPropagation();
+      event.emit('fetch-code')
       dispatch(options[opt]({ fileId }));
       closeDropdown();
     },

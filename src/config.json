@@ -1,0 +1,11 @@
+{
+  "themes": [
+    "blackboard",
+    "dracula",
+    "github-dark",
+    "monokai",
+    "solarized-dark",
+    "twilight"
+  ],
+  "currentTheme": "github-dark"
+}

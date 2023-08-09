@@ -1,9 +1,9 @@
 import {
+  createSlice,
   createAsyncThunk,
   createSelector,
-  createSlice,
 } from "@reduxjs/toolkit";
-import { axiosClient as axios } from "../../axiosClient";
+import { axiosClient } from "../../axiosClient";
 
 export const AUTH_STATUS = {
   success: "SUCCESS",
@@ -12,68 +12,88 @@ export const AUTH_STATUS = {
   idle: "IDLE",
 };
 
-const fetchAuthState = createAsyncThunk(
-  "auth/fetch-auth-state",
-  async ({ code }) => {
-    try {
-      const res = await axios.get("/getAuthStatus", {
-        params: {
-          code,
-        },
-        withCredentials: true,
-      });
+const initialState = {
+  google: null,
+  github: null,
+  status: AUTH_STATUS.idle,
+};
 
-      return res.data;
-    } catch (error) {
-      throw error;
+export const fetchAuthState = createAsyncThunk(
+  "auth/fetch-auth-state",
+  async () => {
+    let res = {};
+    let error = {};
+
+    try {
+      res.google = (
+        await axiosClient.get("/auth/google_auth_status")
+      ).data?.user;
+    } catch (err) {
+      error.google = err;
     }
+
+    try {
+      res.github = (
+        await axiosClient.get("/auth/github_auth_status")
+      ).data?.user;
+    } catch (err) {
+      error.github = err;
+    }
+
+    if (!res.google && !res.github) {
+      return Promise.reject(JSON.stringify(error));
+    }
+
+    return res;
   }
 );
 
-const logout = createAsyncThunk("auth/logout", async () => {
+export const logout = createAsyncThunk("/auth/logout", async () => {
   try {
-    await axios.delete("/logout");
+    await axiosClient.delete("/auth/logout");
   } catch (error) {
-    throw error;
+    return Promise.reject(error.message);
   }
 });
 
 const AuthSlice = createSlice({
   name: "auth",
-  initialState: {
-    auth: null,
-    signInStatus: AUTH_STATUS.idle,
-    signOutStatus: AUTH_STATUS.idle,
-  },
-
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchAuthState.fulfilled, (state, action) => {
-        state.signInStatus = AUTH_STATUS.success;
-        state.signOutStatus = AUTH_STATUS.idle;
-        state.auth = action.payload;
+        state.google = action.payload.google;
+        state.github = action.payload.github;
+        state.status = AUTH_STATUS.success;
       })
       .addCase(fetchAuthState.pending, (state) => {
-        state.signInStatus = AUTH_STATUS.loading;
+        state.status = AUTH_STATUS.loading;
       })
       .addCase(fetchAuthState.rejected, (state) => {
-        state.signInStatus = AUTH_STATUS.failure;
-      })
-      .addCase(logout.pending, (state) => {
-        state.signOutStatus = AUTH_STATUS.loading;
-      })
-      .addCase(logout.rejected, (state) => {
-        state.signOutStatus = AUTH_STATUS.failure;
+        state.status = AUTH_STATUS.failure;
       })
       .addCase(logout.fulfilled, (state) => {
-        state.signInStatus = AUTH_STATUS.success;
+        state.google = null;
+        state.github = null;
+        state.status = AUTH_STATUS.idle;
       });
   },
 });
 
-export const authSelector = createSelector(
-  [(state) => state.auth],
-  (state) => state.auth
+export const googleAuthSelector = createSelector(
+  [(state) => state?.google],
+  (state) => state
+);
+
+export const githubAuthSelector = createSelector(
+  [(state) => state?.github],
+  (state) => state
+);
+
+export const authStatusSelector = createSelector(
+  [(state) => state?.status],
+  (state) => state
 );
 
 export default AuthSlice.reducer;

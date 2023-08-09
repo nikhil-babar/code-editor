@@ -1,8 +1,8 @@
 import React from "react";
-import Modal from "./Modal";
+import Modal from "../utils/Modal";
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addFile } from "../features/Editor/editorSlice";
+import { addFile } from "../../features/Editor/editorSlice";
 
 const CreateFile = ({ handleClick }) => {
   const [filename, setFilename] = useState(null);

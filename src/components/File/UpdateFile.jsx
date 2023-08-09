@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
-import Modal from "./Modal";
+import Modal from "../utils/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { selectFile, updateFile } from "../features/Editor/editorSlice";
+import { selectFile, updateFile } from "../../features/Editor/editorSlice";
 
 const UpdateFile = ({ handleClose, fileId }) => {
   const file = useSelector((state) => selectFile(state.editor, fileId));

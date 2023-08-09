@@ -225,6 +225,7 @@ const CanvasProvider = ({ children }) => {
             30,
             generater
           );
+          break;
 
         default:
           break;

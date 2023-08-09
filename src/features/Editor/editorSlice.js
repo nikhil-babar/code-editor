@@ -7,6 +7,7 @@ import {
 import { axiosClient } from "../../axiosClient";
 import { v4 as uuid } from "uuid";
 import { saveAs } from "file-saver";
+import config from "../../config.json";
 
 export const FILE_STATUS = {
   pending: "PENDING",
@@ -15,7 +16,7 @@ export const FILE_STATUS = {
   idle: "IDLE",
 };
 
-const EXTENSION_TO_LANG = {
+export const EXTENSION_TO_LANG = {
   js: "javascript",
   java: "java",
   py: "python",
@@ -55,25 +56,17 @@ const getOutput = createAsyncThunk(
 
 export const executeCode = createAsyncThunk(
   "editor/execute-code",
-  async ({ code, input, fileId }, { getState, dispatch }) => {
+  async ({ fileId }, { getState, dispatch }) => {
     try {
       const file = fileAdapter
         .getSelectors()
         .selectById(getState().editor, fileId);
 
-      dispatch(
-        updateFile({
-          code,
-          input,
-          fileId,
-        })
-      );
-
       const res = await axiosClient.post("/code", {
-        code,
+        code: file.code,
         lang: file.lang,
         filename: file.nameWithExtension,
-        input,
+        input: file.input,
       });
 
       dispatch(
@@ -99,15 +92,8 @@ const EditorSlice = createSlice({
     ...fileAdapter.getInitialState(),
     openFileIds: [],
     currentFileId: null,
-    themes: [
-      "blackboard",
-      "dracula",
-      "github-dark",
-      "monokai",
-      "solarized-dark",
-      "twilight",
-    ],
-    currentTheme: "github-dark",
+    themes: [...config.themes],
+    currentTheme: config.currentTheme,
   },
   reducers: {
     addFile: (state, action) => {
@@ -115,9 +101,6 @@ const EditorSlice = createSlice({
         ...action.payload,
         fileId: uuid(),
         status: FILE_STATUS.idle,
-        code: " ",
-        input: " ",
-        output: " ",
         lang: EXTENSION_TO_LANG[action.payload.extension],
         nameWithExtension: [action.payload.name, action.payload.extension].join(
           "."
@@ -130,7 +113,6 @@ const EditorSlice = createSlice({
     },
 
     openFile: (state, action) => {
-      console.log("Open file");
       const { fileId } = action.payload;
       if (!fileId) return;
 
@@ -239,22 +221,22 @@ export const {
 } = fileAdapter.getSelectors();
 
 export const selectOpenFileIds = createSelector(
-  [(state) => state.openFileIds],
+  [(state) => state?.openFileIds],
   (state) => state
 );
 
 export const selectCurrentFileId = createSelector(
-  [(state) => state.currentFileId],
+  [(state) => state?.currentFileId],
   (state) => state
 );
 
 export const selectCurrentTheme = createSelector(
-  [(state) => state.currentTheme],
+  [(state) => state?.currentTheme],
   (state) => state
 );
 
 export const selectThemes = createSelector(
-  [(state) => state.themes],
+  [(state) => state?.themes],
   (state) => state
 );
 

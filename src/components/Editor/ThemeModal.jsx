@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectThemes, setTheme } from "../features/Editor/editorSlice";
-import Modal from "./Modal";
+import { selectThemes, setTheme } from "../../features/Editor/editorSlice";
+import Modal from "../utils/Modal";
 import Slider from "react-slick";
 
 const getThemeImages = ({ themes }) => {
   const images = [];
   themes.forEach((theme) => {
-    images.push({ theme, image: require(`../assets/images/${theme}.svg`) });
+    images.push({ theme, image: require(`../../assets/images/${theme}.svg`) });
   });
   return images;
 };

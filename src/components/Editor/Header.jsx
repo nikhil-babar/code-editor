@@ -1,17 +1,22 @@
-import JavaIcon from "../assets/icons/java.png";
-import CppIcon from "../assets/icons/cpp.png";
-import PythonIcon from "../assets/icons/python.png";
-import JsIcon from "../assets/icons/javascript.png";
-import CrossIcon from "../assets/icons/cross.png";
+import JavaIcon from "../../assets/icons/java.png";
+import CppIcon from "../../assets/icons/cpp.png";
+import PythonIcon from "../../assets/icons/python.png";
+import JsIcon from "../../assets/icons/javascript.png";
+import CrossIcon from "../../assets/icons/cross.png";
 import { useDispatch, useSelector } from "react-redux";
+import PlayIcon from "../../assets/icons/play.png";
+import { useCallback } from "react";
+
 import {
+  executeCode,
   selectFile,
   selectOpenFileIds,
   closeFile,
   openFile,
   selectCurrentFileId,
-} from "../features/Editor/editorSlice";
-import { useCallback } from "react";
+} from "../../features/Editor/editorSlice";
+import { event } from "../../utils/events";
+import AuthDetails from "./AuthDetails";
 
 const FILE_TO_ICON = {
   cpp: CppIcon,
@@ -28,6 +33,8 @@ const File = ({ fileId, isCurrentFile }) => {
     (e) => {
       e.stopPropagation();
 
+      event.emit("fetch-code");
+
       dispatch(
         closeFile({
           fileId,
@@ -38,12 +45,16 @@ const File = ({ fileId, isCurrentFile }) => {
   );
 
   const handleOpenFile = useCallback(() => {
+    event.emit("fetch-code");
+
     dispatch(
       openFile({
         fileId,
       })
     );
   }, [dispatch, fileId]);
+
+  if (!fileDetails) return null;
 
   return (
     <>
@@ -79,19 +90,40 @@ const Header = () => {
   const currentFileId = useSelector((state) =>
     selectCurrentFileId(state.editor)
   );
+  const dispatch = useDispatch();
+
+  const handleSubmit = useCallback(() => {
+    event.emit("fetch-code");
+
+    dispatch(
+      executeCode({
+        fileId: currentFileId,
+      })
+    );
+  }, [dispatch, currentFileId]);
 
   return (
     <>
-      <div className="h-[40px] w-full border border-gray-500 bg-se-gray flex justify-between pr-7">
+      <div className="h-[40px] w-full border border-gray-500 bg-se-gray flex justify-between">
         <ul className="flex items-center">
           {filesIds.map((file) => {
             return (
               <>
-                <File fileId={file} isCurrentFile={file === currentFileId} key={file.fileId}/>
+                <File
+                  fileId={file}
+                  isCurrentFile={file === currentFileId}
+                  key={file.fileId}
+                />
               </>
             );
           })}
         </ul>
+        <div className="mr-9 my-2">
+          <button onClick={handleSubmit} className="mr-5">
+            <img src={PlayIcon} alt="run" className="w-6 h-6" />
+          </button>
+          <AuthDetails className={"ml-5"} />
+        </div>
       </div>
     </>
   );

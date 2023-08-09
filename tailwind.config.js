@@ -6,7 +6,9 @@ module.exports = {
       backgroundColor: {
         "pr-gray": "#333333",
         "se-gray": "#252426",
-        "ed-bg": "#353D45"
+        "ed-bg": "#353D45",
+        "gr-purple":
+          "linear-gradient(180deg, #800080 0%, #6A0DAD 100%)",
       },
       borderColor: {
         "neon-blue": "#10E6D7",

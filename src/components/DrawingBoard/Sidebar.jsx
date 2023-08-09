@@ -29,6 +29,7 @@ const Sidebar = ({ className }) => {
             type="button"
             className="block w-7 h-7"
             onClick={() => selectTool(e)}
+            key={tool}
           >
             <img src={TOOL_TO_ICON[tool]} alt={tool} key={tool} />
           </button>
