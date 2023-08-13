@@ -6,6 +6,10 @@ Backend: https://github.com/nikhil-babar/code-executor-engine
 
 ## Current progress:
 
+![editor](https://github.com/nikhil-babar/code-editor/assets/115392530/9c5f50af-c37b-4195-8940-a2becf57ee08)
+
+
+
 ![main1](https://github.com/nikhil-babar/code-editor/assets/115392530/43ad61a1-5ac8-4d3d-a699-3b794f7d698b)
 
 
