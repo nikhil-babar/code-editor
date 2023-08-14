@@ -3,6 +3,7 @@ import Modal from "../utils/Modal";
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addFile } from "../../features/Editor/editorSlice";
+import config from "../../config.json";
 
 const CreateFile = ({ handleClick }) => {
   const [filename, setFilename] = useState(null);
@@ -17,7 +18,11 @@ const CreateFile = ({ handleClick }) => {
 
       const [name, extension] = filename.split(".");
 
-      if (!name || !extension) {
+      if (
+        !name ||
+        !extension ||
+        !Object.keys(config.languages).includes(extension)
+      ) {
         setIsError(true);
         return;
       }
@@ -44,7 +49,7 @@ const CreateFile = ({ handleClick }) => {
           >
             Create New File
           </label>
-          <div  className="flex justify-between gap-2">
+          <div className="flex justify-between gap-2">
             <input
               type="text"
               id="small-input"

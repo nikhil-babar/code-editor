@@ -16,14 +16,6 @@ export const FILE_STATUS = {
   idle: "IDLE",
 };
 
-export const EXTENSION_TO_LANG = {
-  js: "javascript",
-  java: "java",
-  py: "python",
-  cpp: "cpp",
-  c: "c",
-};
-
 const getOutput = createAsyncThunk(
   "editor/get-output",
   async ({ fetchRetry = 0, _id, fileId }, { dispatch }) => {
@@ -33,6 +25,8 @@ const getOutput = createAsyncThunk(
           submit_id: _id,
         },
       });
+
+      console.log(res.data)
 
       return { ...res.data, fileId };
     } catch (error) {
@@ -101,7 +95,7 @@ const EditorSlice = createSlice({
         ...action.payload,
         fileId: uuid(),
         status: FILE_STATUS.idle,
-        lang: EXTENSION_TO_LANG[action.payload.extension],
+        lang: config.languages[action.payload.extension],
         nameWithExtension: [action.payload.name, action.payload.extension].join(
           "."
         ),

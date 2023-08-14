@@ -1,22 +1,12 @@
 import React, { useState } from "react";
 import CreateFileIcon from "../../assets/icons/create_file.png";
-import JavaIcon from "../../assets/icons/java.png";
-import CppIcon from "../../assets/icons/cpp.png";
-import PythonIcon from "../../assets/icons/python.png";
-import JsIcon from "../../assets/icons/javascript.png";
 import MenuIcon from "../../assets/icons/dots.png";
 import CreateFile from "./CreateFile";
 import { useSelector, useDispatch } from "react-redux";
 import { openFile, selectAllFiles } from "../../features/Editor/editorSlice";
 import { useCallback } from "react";
 import FileDropdown from "./FileDropdown";
-
-const FILE_TO_ICON = {
-  cpp: CppIcon,
-  java: JavaIcon,
-  python: PythonIcon,
-  javascript: JsIcon,
-};
+import { FILE_TO_ICON } from "../../utils/lang_icons";
 
 const File = ({ details }) => {
   const dispatch = useDispatch();

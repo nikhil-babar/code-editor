@@ -22,6 +22,7 @@ const Editor = ({ className }) => {
   const theme = useSelector((state) => selectCurrentTheme(state.editor));
   const editorRef = useRef();
   const inputRef = useRef();
+  const outputRef = useRef();
   const dispatch = useDispatch();
   const isLoading =
     editor?.status.localeCompare(FILE_STATUS.pending) === 0 ? true : false;
@@ -52,6 +53,7 @@ const Editor = ({ className }) => {
     return () => {
       editorRef.current?.setValue("");
       inputRef.current?.setValue("");
+      outputRef.current?.setValue("");
     };
   }, [currentFileId]);
 
@@ -99,6 +101,7 @@ const Editor = ({ className }) => {
             }}
             height={"50%"}
             value={editor?.output}
+            onMount={(e) => (outputRef.current = e)}
           />
         </div>
       </div>

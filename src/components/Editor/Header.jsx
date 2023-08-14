@@ -1,12 +1,7 @@
-import JavaIcon from "../../assets/icons/java.png";
-import CppIcon from "../../assets/icons/cpp.png";
-import PythonIcon from "../../assets/icons/python.png";
-import JsIcon from "../../assets/icons/javascript.png";
 import CrossIcon from "../../assets/icons/cross.png";
 import { useDispatch, useSelector } from "react-redux";
 import PlayIcon from "../../assets/icons/play.png";
 import { useCallback } from "react";
-
 import {
   executeCode,
   selectFile,
@@ -17,13 +12,7 @@ import {
 } from "../../features/Editor/editorSlice";
 import { event } from "../../utils/events";
 import AuthDetails from "./AuthDetails";
-
-const FILE_TO_ICON = {
-  cpp: CppIcon,
-  java: JavaIcon,
-  python: PythonIcon,
-  javascript: JsIcon,
-};
+import { FILE_TO_ICON } from "../../utils/lang_icons";
 
 const File = ({ fileId, isCurrentFile }) => {
   const fileDetails = useSelector((state) => selectFile(state.editor, fileId));

@@ -7,5 +7,12 @@
     "solarized-dark",
     "twilight"
   ],
-  "currentTheme": "github-dark"
+  "currentTheme": "github-dark",
+  "languages": {
+    "js": "javascript",
+    "java": "java",
+    "py": "python",
+    "cpp": "cpp",
+    "c": "c"
+  }
 }

@@ -13,7 +13,7 @@ const Navbar = () => {
     <section className="flex justify-between lg:px-10 md:px-5 px-4 py-5 items-center text-white">
       <div className="flex items-center gap-3">
         <h3 className="text-center text-xl font-bold">
-          Code<span className="text-purple-500">Xpert</span>
+          Code<span className="text-green-500">Xpert</span>
         </h3>
         <ul className="md:flex relative left-10 gap-5 cursor-pointer hidden">
           {navLink.map(({title, id}) => {
