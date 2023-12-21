@@ -16,6 +16,14 @@ export const FILE_STATUS = {
   idle: "IDLE",
 };
 
+export const LANG_TO_ID = {
+  c: 49,
+  cpp: 53,
+  java: 62,
+  javascript: 63,
+  python: 92,
+};
+
 const getOutput = createAsyncThunk(
   "editor/get-output",
   async ({ fetchRetry = 0, _id, fileId }, { dispatch }) => {
@@ -26,7 +34,7 @@ const getOutput = createAsyncThunk(
         },
       });
 
-      console.log(res.data)
+      console.log(res.data);
 
       return { ...res.data, fileId };
     } catch (error) {
