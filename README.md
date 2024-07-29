@@ -25,8 +25,90 @@ Demo: https://www.youtube.com/watch?v=G2lyjFt-BrE
 ![themes](https://github.com/nikhil-babar/code-editor/assets/115392530/3aea55ff-9964-44f5-9ea9-f210671ab941)
 
 
-
 ![drawing_board](https://github.com/nikhil-babar/code-editor/assets/115392530/81a3ec77-8d76-436b-a879-7a485a48ab97)
+
+
+---
+
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+- Node.js (v14 or higher)
+- npm (v6 or higher) or yarn (v1.22 or higher)
+
+## Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/nikhil-babar/code-editor.git
+   cd code-editor
+   ```
+
+2. **Install dependencies:**
+
+   Using npm:
+   ```bash
+   npm install
+   ```
+
+   Or using yarn:
+   ```bash
+   yarn install
+   ```
+
+## Usage
+
+1. **Start the development server:**
+
+   Using npm:
+   ```bash
+   npm start
+   ```
+
+   Or using yarn:
+   ```bash
+   yarn start
+   ```
+
+   The application will be available at `http://localhost:3000`.
+
+2. **Build for production:**
+
+   Using npm:
+   ```bash
+   npm run build
+   ```
+
+   Or using yarn:
+   ```bash
+   yarn build
+   ```
+
+## Contributing
+
+To contribute to this project, please follow these steps:
+
+1. Fork this repository.
+2. Create a branch: `git checkout -b feature/your-feature`.
+3. Make your changes and commit them: `git commit -m 'Add some feature'`.
+4. Push to the original branch: `git push origin feature/your-feature`.
+5. Create the pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+If you have any questions or suggestions, feel free to reach out to [nikhilbabarjee@gmail.com].
+
+---
+
+
+
+
 
 
 
